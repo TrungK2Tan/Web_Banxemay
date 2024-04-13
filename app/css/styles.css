@@ -1,0 +1,116 @@
+.product-card {
+    height: 100%;
+    /* Đảm bảo các khung sản phẩm có chiều cao như nhau */
+}
+
+.product-card .card {
+    height: 100%;
+    /* Đảm bảo các thẻ card trong khung sản phẩm có chiều cao như nhau */
+}
+
+.card-img-top {
+    height: 200px;
+    /* Thiết lập chiều cao cố định cho ảnh */
+    object-fit: cover;
+    /* Đảm bảo ảnh sẽ được căn chỉnh và cắt tỉa phù hợp */
+}
+
+.add-to-cart-btn {
+    margin-top: 10px;
+    /* Điều chỉnh khoảng cách từ nút "Thêm vào giỏ hàng" lên trên */
+}
+.container a {
+    padding: 0 8px 5px;
+    margin-bottom: -5px;
+}
+.container a:hover {
+    background-color: #115133;
+    color: #ffffff;
+    border-radius: 1px;
+}
+.a-auth{
+    padding: 0 8px 5px;
+    margin: 5px 0 -5px;
+    color: #00f7cc;
+}
+.a-auth:hover {
+    background-color: #115133;
+    border-radius: 1px;
+}
+.form-group label {
+    font-weight: bold;
+}
+.form-group input {
+    margin: 5px;
+}
+.mb-3 label {
+    font-weight: bold;
+}
+.mb-3 input {
+    margin: 5px;
+}
+.card-title a {
+    padding: 0 0 5px;
+    text-decoration: none;
+    font-weight: bold; 
+    margin-bottom: -5px;
+    color: black;
+}
+.card-title a:hover {
+    background-color: #fff;
+    color: black;
+}
+.main-click {
+    display: flex;
+    flex-wrap: wrap;
+}
+.main-click a{
+    width: calc(50% - 6px);
+    margin: 0 3px;
+    flex: 1;
+    background-color: #198754;
+    border: 1px solid #ddd;
+}
+.main-click a:hover {
+    background-color: #115133;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+.btn-cl{
+    width: calc(50% - 6px);
+    margin: 0 3px;
+    background-color: #198754;
+    border: 1px solid #ddd;
+}
+.btn-cl:hover {
+    background-color: #115133;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+.main-click a:hover:nth-child(2) {
+    font-weight: bold;
+    color: rgb(243, 63, 63);    
+    background-color: #076e3e;
+}
+.main-click button{
+    width: 100%;
+    margin: 3px;
+    border: 1px solid #ddd;
+    background-color: #198754;
+}
+.main-click button:hover {
+    background-color: #115133;
+    border: 1px solid #333;
+    border-radius: 5px;
+}
+#checkoutForm button{
+    flex: 2;
+    margin: 3px;
+    border: 1px solid #ddd;
+    background-color: #198754;
+}
+#checkoutForm button:hover {
+    background-color: #115133;
+    border: 1px solid #333;
+    border-radius: 5px;
+}

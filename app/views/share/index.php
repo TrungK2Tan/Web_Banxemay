@@ -22,7 +22,7 @@ $categories = $this->productModel->getAllCategories();
 
 <body>
     <div class="container">
-    <div class="row">
+        <div class="row">
             <!-- Cột danh mục sản phẩm chiếm 20% -->
             <div class="col-md-3">
                 <div class="p-3">
@@ -56,7 +56,8 @@ $categories = $this->productModel->getAllCategories();
                                         <p class="card-text"><?= $row['description'] ?></p>
                                         <p class="card-text">Giá: <?= number_format($row['price'], 0, ',', '.') ?> đ</p>
                                         <div class="main-click">
-                                            <a href="/php/product/detail/<?= $row['id'] ?>" class="btn btn-primary">Mua Ngay</a>
+                                            <a href="/php/product/detail/<?= $row['id'] ?>" class="btn btn-primary">Mua
+                                                Ngay</a>
                                             <?php
                                             if (SessionHelper::isLoggedIn()) {
                                                 if ($_SESSION['role'] == 1) {
@@ -74,8 +75,9 @@ $categories = $this->productModel->getAllCategories();
                     <?php endwhile; ?>
                 </div>
             </div>
+
         </div>
-        
+
     </div>
 
 

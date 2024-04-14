@@ -1,10 +1,15 @@
 </div>
 
 <!-- Sidebar -->
+<div class="col-md-3">
+    <div class="banner">
+        <img src="app/image/banner.png" style="width: 100%; height: auto;" />
+    </div>
+
+</div>
 
 </div>
 </div>
-
 <!-- Phần footer -->
 <div class=" mt-4 " style="background-color:#fa5230">
     <div class="row">

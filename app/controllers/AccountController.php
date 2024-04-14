@@ -1,4 +1,5 @@
 <?php
+include_once 'app/controllers/AdminController.php'; 
 class AccountController
 {
 
@@ -91,6 +92,12 @@ class AccountController
                 $_SESSION['accountId'] = $account->id; // Đặt accountId vào session
 
                 header ('Location: /php');
+                  // Chuyển hướng người dùng dựa trên role
+            if ($_SESSION['role'] == 1) {
+                header('Location: /php/admin/'); // Đường dẫn tới trang admin
+             } else {
+                header('Location: /php/'); // Đường dẫn tới trang người dùng
+            }
             }else if ($account && !password_verify($pass, $account->password))
             {
                 $errors['account'] = "Sai mat khau roi!";

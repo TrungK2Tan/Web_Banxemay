@@ -18,6 +18,13 @@ class ProductModel
 
         return $stmt;
     }
+    public function getAllProducts()
+    {
+        $query = "SELECT id, name, description, price, image FROM " . $this->table_name;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     public function getAllCategories()
     {
         $query = "SELECT id, name FROM category"; // Assuming 'name' is the column for category names

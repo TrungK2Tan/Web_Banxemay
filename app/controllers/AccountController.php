@@ -116,4 +116,94 @@ class AccountController
         unset($_SESSION['name']);
         header('Location: /php/account/login');
     }
+
+    public function AccountManagement()
+    {
+        // Retrieve all users
+        $users = $this->accountModel->getAllUsers();
+
+        // Include the index view
+        include 'app/views/admin/AccountManagement.php';
+    }
+
+
+    public function addUser()
+    {
+        // Include the add user view
+        include 'app/views/admin/add_user.php';
+    }
+
+    public function saveUser()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Retrieve user data from the form
+            $username = $_POST['name'] ?? '';
+            $password = $_POST['password'] ?? '';
+            $email = $_POST['email'] ?? '';
+
+            // Create the user
+            $result = $this->accountModel->addUser($username, $password, $email);
+
+            if ($result === true) {
+                $_SESSION['success_message'] = "Người dùng đã được tạo thành công!";
+                // User created successfully, redirect to admin index
+                header("Location: /php/account/AccountManagement");
+                exit;
+            } else {
+                // Handle errors
+                // You can set an error message here and redirect back to the add user form
+            }
+        }
+        
+    }
+    public function editUser($userId)
+    {
+        // Retrieve user data by ID
+        $user = $this->accountModel->getUserById($userId);
+
+        if ($user) {
+            // Include the edit user view
+            include 'app/views/admin/edit_user.php';
+        } else {
+            // Handle user not found
+            // You can set an error message here and redirect back to the admin index
+        }
+    }
+
+    public function updateUser($userId)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Retrieve user data from the form
+            $name = $_POST['name'] ?? '';
+            $password = $_POST['password'] ?? '';
+            $email = $_POST['email'] ?? '';
+
+            // Update the user
+            $result = $this->accountModel->updateUser($userId, $name, $password, $email);
+
+            if ($result === true) {
+                // User updated successfully, redirect to admin index
+                header("Location: /php/admin/user");
+                exit;
+            } else {
+                // Handle errors
+                // You can set an error message here and redirect back to the edit user form
+            }
+        }
+    }
+
+    public function deleteUser($userId)
+    {
+        // Delete the user
+        $result = $this->accountModel->deleteUser($userId);
+
+        if ($result === true) {
+            // User deleted successfully, redirect to admin index
+            header("Location: /php/admin/user");
+            exit;
+        } else {
+            // Handle errors
+            // You can set an error message here and redirect back to the admin index
+        }
+    }
 }

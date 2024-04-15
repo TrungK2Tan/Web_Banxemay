@@ -10,6 +10,9 @@ class AdminModel
     {
         $this->conn = $db;
     }
+
+    
+
     public function getAllOrders()
 {
     $query = "SELECT o.Id AS OrderId, o.Date, o.Address, o.Phone, o.Total, od.ProductId, p.Name AS ProductName, od.Amount, u.name
@@ -22,8 +25,31 @@ class AdminModel
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+public function searchOrders($searchQuery)
+{
+    // Query to search for orders based on the product name
+    $query = "SELECT o.Id AS OrderId, o.Date, o.Address, o.Phone, o.Total, od.ProductId, p.Name AS ProductName, od.Amount, u.name
+                FROM `" . $this->table_name_order . "` AS o
+                INNER JOIN `" . $this->table_name_order_detail . "` AS od ON o.Id = od.OrderId
+                INNER JOIN `products` AS p ON od.ProductId = p.Id
+                INNER JOIN `accout` AS u ON o.AccountId = u.Id
+                WHERE p.Name LIKE :searchQuery";
 
+    // Prepare the query
+    $stmt = $this->conn->prepare($query);
 
+    // Bind the search query parameter
+    $searchParam = "%" . $searchQuery . "%";
+    $stmt->bindParam(":searchQuery", $searchParam);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch all matching orders
+    $searchedOrders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $searchedOrders;
+}
     function readAll()
     {
         $query = "SELECT id, name, description, price, image FROM " . $this->table_name;
@@ -51,7 +77,7 @@ class AdminModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function createProduct($name, $description, $price, $image)
+    public function createProduct($name, $description, $price, $image,$category)
     {
         // Kiểm tra ràng buộc đầu vào
         $errors = [];
@@ -71,7 +97,7 @@ class AdminModel
 
         // Truy vấn tạo sản phẩm mới
 
-        $query = "INSERT INTO " . $this->table_name . " (name, description, price, image) VALUES (:name, :description, :price, :image)";
+        $query = "INSERT INTO " . $this->table_name . " (name, description, price, image, category_id) VALUES (:name, :description, :price, :image,:category_id)";
         $stmt = $this->conn->prepare($query);
 
         // Làm sạch dữ liệu
@@ -84,6 +110,8 @@ class AdminModel
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':price', $price);
         $stmt->bindParam(':image', $image);
+        $stmt->bindParam(':category_id', $category);
+
 
         // Thực thi câu lệnh
         if ($stmt->execute()) {
@@ -93,18 +121,9 @@ class AdminModel
         return false;
     }
 
-    public function getProductById($id)
-    {
-        $query = "SELECT * FROM " . $this->table_name . " where id = $id";
-
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_OBJ);
-        return $result;
-    }
 
     //updateProduct
-    public function updateProduct($id, $name, $description, $price, $image = null)
+    public function updateProduct($id, $name, $description, $price, $image = null,$category)
     {
         // Kiểm tra ràng buộc đầu vào
         $errors = [];
@@ -124,7 +143,7 @@ class AdminModel
 
         // Cập nhật dữ liệu sản phẩm
 
-        $query = "UPDATE " . $this->table_name . " SET name = :name, description = :description, price = :price";
+        $query = "UPDATE " . $this->table_name . " SET name = :name, description = :description, price = :price, category_id = :category_id";
 
         // Nếu có hình ảnh mới được tải lên, cập nhật đường dẫn hình ảnh mới
         if ($image !== null) {
@@ -145,6 +164,8 @@ class AdminModel
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':price', $price);
         $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':category_id', $category);
+
 
         // Nếu có hình ảnh mới được tải lên, gán dữ liệu vào câu lệnh
         if ($image !== null) {
@@ -159,6 +180,15 @@ class AdminModel
         return false;
     }
 
+    public function getProductById($id)
+    {
+        $query = "SELECT * FROM " . $this->table_name . " where id = $id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        return $result;
+    }
     //xóa 
     public function getAllProducts()
     {
@@ -167,6 +197,23 @@ class AdminModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function searchProducts($searchQuery)
+{
+    // Tạo câu truy vấn SQL để tìm kiếm sản phẩm theo tên hoặc mô tả
+    $query = "SELECT * FROM " . $this->table_name . " WHERE name LIKE :searchQuery OR description LIKE :searchQuery";
+
+    // Chuẩn bị câu truy vấn
+    $stmt = $this->conn->prepare($query);
+
+    // Bind các tham số và thực thi câu truy vấn
+    $searchParam = "%" . $searchQuery . "%";
+    $stmt->bindParam(":searchQuery", $searchParam);
+    $stmt->execute();
+
+    // Trả về kết quả tìm kiếm
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
     public function deleteProduct($id)
     {
         // Chuẩn bị câu lệnh SQL để xóa sản phẩm

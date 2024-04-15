@@ -22,6 +22,7 @@ class AdminController
         include 'app/views/admin/order.php';
     }
     
+
     public function exportToExcel()
     {
         // Get all orders from the model
@@ -49,17 +50,32 @@ class AdminController
             $productId = $_GET['id'];
             $this->deleteProduct($productId);
         }
-        if (isset($_GET['action']) && $_GET['action'] == 'edit' && isset($_GET['id'])) {
-            $productId = $_GET['id'];
-            $this->edit($productId); // Make sure you're passing $productId to the edit() method
-        }
-
+       
         // Retrieve all products
         $products = $this->adminModel->getAllProducts();
 
         // Include the index view
         include 'app/views/admin/index.php';
     }
+    public function search()
+{
+    // Check if search query is set in the URL
+    if (isset($_GET['search'])) {
+        // Get the search query from the URL
+        $searchQuery = $_GET['search'];
+
+        // Pass the search query to the model to get matching orders
+        $searchedOrders = $this->adminModel->searchOrders($searchQuery);
+
+        // Pass the searched orders data to the view
+        include 'app/views/admin/searched_orders.php';
+    } else {
+        // If search query is not set, redirect to the order page
+        header("Location: order");
+        exit();
+    }
+}
+
 
     public function getProductById($productId)
     {
@@ -85,28 +101,27 @@ class AdminController
             $name = $_POST['name'] ?? '';
             $description = $_POST['description'] ?? '';
             $price = $_POST['price'] ?? '';
+            $category_id = $_POST['category'] ?? '';
+
 
             // Xử lý tải lên hình ảnh đại diện
             if (isset($_FILES["image"])) {
                 $uploadResult = $this->uploadImage($_FILES["image"]);
                 if ($uploadResult) {
                     // Lưu đường dẫn của hình ảnh đại diện vào CSDL
-                    $result = $this->adminModel->createProduct($name, $description, $price, $uploadResult);
+                    $result = $this->adminModel->createProduct($name, $description, $price, $uploadResult, $category_id);
                 } else {
                     // Xử lý lỗi tải lên ở đây nếu cần thiết
                 }
 
             }
-
-
-
             if (is_array($result)) {
                 // Có lỗi, hiển thị lại form với thông báo lỗi
                 $errors = $result;
                 include 'app/views/admin'; // Đường dẫn đến file form sản phẩm
             } else {
                 // Không có lỗi, chuyển hướng ve trang chu hoac trang danh sach
-                header('Location: /php');
+                header('Location: /php/admin');
             }
         }
 
@@ -155,7 +170,7 @@ class AdminController
 
         $product = $this->adminModel->getProductById($id);
 
-        // var_dump($product);
+        // var_dump($product);0
         // die();
 
         if ($product) {
@@ -164,7 +179,25 @@ class AdminController
             include_once 'app/views/share/not-found.php';
         }
     }
-
+    public function search_product ()
+    {
+        // Kiểm tra xem có yêu cầu tìm kiếm không
+        if (isset($_GET['search'])) {
+            // Lấy từ khóa tìm kiếm từ URL
+            $searchQuery = $_GET['search'];
+    
+            // Gọi phương thức searchProducts từ AdminModel để tìm kiếm sản phẩm
+            $searchedProducts = $this->adminModel->searchProducts($searchQuery);
+    
+            // Chuyển dữ liệu kết quả tìm kiếm vào view và hiển thị
+            include 'app/views/admin/searched_products.php';
+        } else {
+            // Nếu không có yêu cầu tìm kiếm, chuyển hướng về trang chính
+            header("Location: index");
+            exit();
+        }
+    }
+    
     // update
     public function update($id)
     {
@@ -172,6 +205,7 @@ class AdminController
             $name = $_POST['name'] ?? '';
             $description = $_POST['description'] ?? '';
             $price = $_POST['price'] ?? '';
+            $category = $_POST['category_id'] ?? '';
 
             // Kiểm tra xem sản phẩm có tồn tại không
             $product = $this->adminModel->getProductById($id);
@@ -185,14 +219,14 @@ class AdminController
                 $uploadResult = $this->uploadImage($_FILES["image"]);
                 if ($uploadResult) {
                     // Lưu đường dẫn của hình ảnh đại diện vào CSDL
-                    $result = $this->adminModel->updateProduct($id, $name, $description, $price, $uploadResult);
+                    $result = $this->adminModel->updateProduct($id, $name, $description, $price, $uploadResult, $category);
                 } else {
                     // Lỗi tải lên
                     // Bạn có thể xử lý lỗi ở đây nếu cần thiết
                 }
             } else {
                 // Nếu không có hình ảnh mới được tải lên, chỉ cập nhật thông tin sản phẩm
-                $result = $this->adminModel->updateProduct($id, $name, $description, $price);
+                $result = $this->adminModel->updateProduct($id, $name, $description, $price, '', $category);
             }
 
             if (is_array($result)) {

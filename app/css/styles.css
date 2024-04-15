@@ -114,3 +114,30 @@
     border: 1px solid #333;
     border-radius: 5px;
 }
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Khoảng cách từ phân trang đến nội dung khác */
+}
+
+.pagination a {
+    color: #007bff; /* Màu chữ */
+    text-decoration: none; /* Gỡ bỏ gạch chân dưới */
+    margin: 0 20px; /* Khoảng cách giữa các nút */
+    padding: 15px 30px;    /* Kích thước của nút */
+    border: 1px solid #007bff; /* Viền của nút */
+    border-radius: 5px; /* Bo góc */
+    transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển đổi */
+    font-size: 25px;
+}
+
+.pagination a:hover {
+    background-color: #007bff; /* Màu nền khi di chuột qua */
+    color: #fff; /* Màu chữ khi di chuột qua */
+}
+
+.pagination a.active {
+    background-color: #007bff; /* Màu nền của nút đang chọn */
+    color: #fff; /* Màu chữ của nút đang chọn */
+    pointer-events: none; /* Ngăn người dùng nhấp vào nút đang chọn */
+}

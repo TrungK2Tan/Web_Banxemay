@@ -1,4 +1,15 @@
 <?php
+require_once 'app/controllers/AdminController.php';
+
+// Instantiate the AdminController
+$adminController = new AdminController();
+
+// Handle edit product request
+if (isset($_GET['action']) && $_GET['action'] == 'edit' && isset($_GET['id'])) {
+    $productId = $_GET['id'];
+    $adminController->edit($productId); // Make sure you're passing $productId to the edit() method
+}
+
 // Kiểm tra nếu có yêu cầu xóa sản phẩm
 if (isset($_GET['action']) && $_GET['action'] == 'delete') {
     // Xác định id sản phẩm cần xóa
@@ -76,7 +87,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
                         <a class="active-menu" href="#"><i class="fa fa-dashboard"></i> Quản lý sản phẩm</a>
                     </li>
                     <li>
-                        <a href="ui-elements.html"><i class="fa fa-desktop"></i>Quản lý đơn hàng</a>
+                        <a href="order"><i class="fa fa-desktop"></i>Quản lý đơn hàng</a>
                     </li>
                     <li>
                         <a href="chart.html"><i class="fa fa-bar-chart-o"></i> Quản lý tài khoản</a>
@@ -104,7 +115,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
                 </div>
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 Danh sách sản phẩm
@@ -133,8 +143,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
                                                         <td><img src="<?php echo $product['image']; ?>" alt="Product Image"
                                                                 style="width: 100px; height: 100px;"></td>
                                                         <td>
-                                                            <a href="/php/admin/editProduct?id=<?php echo $product['id']; ?>"
-                                                                class="btn btn-primary">Sửa</a>
+                                                        <a href="/php/admin/edit?id=<?php echo $product['id']; ?>" class="btn btn-primary">Sửa</a>
+
                                                             <a href="/php/admin/index?action=delete&id=<?php echo $product['id']; ?>"
                                                                 class="btn btn-danger"
                                                                 onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')">Xóa</a>
@@ -152,7 +162,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
                                 </div>
                             </div>
                         </div>
-                        <a href="/php/admin/addProduct" class="btn btn-success">Thêm sản phẩm</a>
+                        <a href="/php/admin/add" class="btn btn-success">Thêm sản phẩm</a>
 
                     </div>
                 </div>

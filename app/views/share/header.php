@@ -19,10 +19,12 @@
         <img src="app/image/logo.png" />
         <h1 class="text-white text-center py-4" style="padding :10px">Xe Máy</h1>
         <div style="display: flex;margin-bottom: 30px;">
-            <input placeholder="Search ..." class="form-control"
+        <form action="/php/product/search" method="GET" class="form-inline">
+            <input type="text" name="keyword" class="form-control" placeholder="Search ..."
                 style="width: 600px; margin-top: 36px;margin-left: 100px;">
-            <button class="btn btn-light" style="margin-top: 36px; margin-left: 10px"><i class="fas fa-search"></i>
-            </button>
+            <button type="submit" class="btn btn-light" style="margin-top: 36px; margin-left: 10px"><i
+                    class="fas fa-search"></i></button>
+        </form>
             <a class="nav-link text-white" href="/php/shoppingcart" style="margin-top: 36px; margin-left: 10px">
                 <i class="fas fa-shopping-cart" style="font-size: 19px;margin-top: 12px;"></i>
             </a>

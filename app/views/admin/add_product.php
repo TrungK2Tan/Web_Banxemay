@@ -1,31 +1,51 @@
+<?php
+include_once 'app/views/share/header.php'
+    ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Thêm Sản Phẩm</title>
-    <!-- Include các file CSS và JS cần thiết -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin thanh toán</title>
+    <!-- Sử dụng Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Sử dụng thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/php/app/css/styles.css">
+
 </head>
+
 <body>
-    <!-- Form thêm sản phẩm -->
-    <h2>Thêm Sản Phẩm</h2>
-    <form method="post" action="/php/admin/saveProduct">
-        <!-- Trường nhập tên sản phẩm -->
-        <label for="name">Tên Sản Phẩm:</label>
-        <input type="text" id="name" name="name"><br><br>
-        
-        <!-- Trường nhập mô tả sản phẩm -->
-        <label for="description">Mô Tả:</label><br>
-        <textarea id="description" name="description" rows="4" cols="50"></textarea><br><br>
-        
-        <!-- Trường nhập giá sản phẩm -->
-        <label for="price">Giá Tiền:</label>
-        <input type="number" id="price" name="price"><br><br>
-        
-        <!-- Trường upload hình ảnh sản phẩm -->
-        <label for="image">Hình Ảnh:</label>
-        <input type="file" id="image" name="image"><br><br>
-        
-        <!-- Nút submit để thêm sản phẩm -->
-        <input type="submit" name="submit" value="Thêm">
-    </form>
+    <div class="row">
+        <form action="/php/admin/save" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Name </label>
+                <input type="text" class="form-control" id="name" name="name" aria-describedby="name"
+                    placeholder="Enter Name">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" class="form-control" id="price" name="price" placeholder="price">
+            </div>
+            <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" class="form-control-file" id="image" name="image">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
 </body>
+
 </html>
+
+
+<?php
+include_once 'app/views/share/footer.php'
+    ?>

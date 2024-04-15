@@ -4,7 +4,25 @@ include_once 'app/views/share/header.php';
 // Lấy danh sách loại sản phẩm từ model
 $categories = $this->productModel->getAllCategories();
 
+// Tính toán số lượng sản phẩm trên mỗi trang
+$itemsPerPage = 3;
+
+// Tính tổng số lượng sản phẩm
+$totalProducts = $this->productModel->getTotalProducts();
+
+// Tính toán tổng số trang
+$totalPages = ceil($totalProducts / $itemsPerPage);
+
+// Xác định trang hiện tại
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+// Tính toán offset cho truy vấn SQL
+$start = ($page - 1) * $itemsPerPage;
+
+// Lấy danh sách sản phẩm cho trang hiện tại
+$products = $this->productModel->getProductsPaginated($start, $itemsPerPage);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,7 +35,6 @@ $categories = $this->productModel->getAllCategories();
     <!-- Sử dụng thư viện jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="/php/app/css/styles.css">
-
 </head>
 
 <body>
@@ -30,10 +47,10 @@ $categories = $this->productModel->getAllCategories();
                         <h5 class="text-center">LOẠI SẢN PHẨM</h5>
                         <ul class="list-unstyled">
                             <?php foreach ($categories as $category): ?>
-                                <li>
-                                    <a href="/php/product/category/<?= $category['id'] ?>"
-                                        class="d-block text-white py-2 px-3 mb-2 rounded category-button"><?= $category['name']; ?></a>
-                                </li>
+                            <li>
+                                <a href="/php/product/category/<?= $category['id'] ?>"
+                                    class="d-block text-white py-2 px-3 mb-2 rounded category-button"><?= $category['name']; ?></a>
+                            </li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
@@ -42,49 +59,48 @@ $categories = $this->productModel->getAllCategories();
             <!-- Cột danh sách sản phẩm chiếm 80% -->
             <div class="col-md-9">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
-                    <?php while ($row = $products->fetch(PDO::FETCH_ASSOC)): ?>
-                        <div class="col">
-                            <div class="product-card">
-                                <div class="card">
-                                    <img src="/php/<?= $row['image']; ?>" class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            <a href="/php/product/detail/<?= $row['id'] ?>">
-                                                <?= $row['name'] ?>
-                                            </a>
-                                        </h5>
-                                        <p class="card-text"><?= $row['description'] ?></p>
-                                        <p class="card-text">Giá: <?= number_format($row['price'], 0, ',', '.') ?> đ</p>
-                                        <div class="main-click">
-                                            <a href="/php/product/detail/<?= $row['id'] ?>" class="btn btn-primary">Mua
-                                                Ngay</a>
-                                            <?php
-                                            if (SessionHelper::isLoggedIn()) {
-                                                if ($_SESSION['role'] == 1) {
-                                                    echo '<a href="/php/product/delete/' . $row['id'] . '" class="btn btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa sản phẩm này?\')">Xóa</a>';
-                                                }
-                                            }
-                                            ?>
-                                            <button class="btn btn-primary add-to-cart add-to-cart-btn"
-                                                onclick="addToCart(<?= $row['id']; ?>)">Thêm vào giỏ hàng</button>
-                                        </div>
+                    <?php foreach ($products as $row): ?>
+                    <div class="col">
+                        <div class="product-card">
+                            <div class="card">
+                                <img src="/php/<?= $row['image']; ?>" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="/php/product/detail/<?= $row['id'] ?>">
+                                            <?= $row['name'] ?>
+                                        </a>
+                                    </h5>
+                                    <p class="card-text"><?= $row['description'] ?></p>
+                                    <p class="card-text">Giá: <?= number_format($row['price'], 0, ',', '.') ?> đ</p>
+                                    <div class="main-click">
+                                        <a href="/php/product/detail/<?= $row['id'] ?>"
+                                            class="btn btn-primary">Mua Ngay</a>
+                                        <?php if (SessionHelper::isLoggedIn() && $_SESSION['role'] == 1): ?>
+                                        <a href="/php/product/delete/<?= $row['id'] ?>"
+                                            class="btn btn-danger"
+                                            onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">Xóa</a>
+                                        <?php endif; ?>
+                                        <button class="btn btn-primary add-to-cart add-to-cart-btn"
+                                            onclick="addToCart(<?= $row['id']; ?>)">Thêm vào giỏ hàng</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <?php endwhile; ?>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
-
         </div>
-
     </div>
 
-
-    <!-- Script JavaScript -->
+        <!-- Hiển thị liên kết phân trang -->
+        <div class="pagination justify-content-center">
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="/php?page=<?= $i ?>" class="btn btn-primary btn-lg <?= ($page == $i) ? 'active' : '' ?>"><?= $i ?></a>
+            <?php endfor; ?>
+        </div>
 
     <script>
-
         function addToCart(productId) {
             // Gửi yêu cầu AJAX để thêm sản phẩm vào giỏ hàng
             const xhr = new XMLHttpRequest();
@@ -106,7 +122,6 @@ $categories = $this->productModel->getAllCategories();
 
 </html>
 
-
 <?php
 include_once 'app/views/share/footer.php'
-    ?>
+?>

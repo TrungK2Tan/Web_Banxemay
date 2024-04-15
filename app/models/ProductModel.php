@@ -18,13 +18,6 @@ class ProductModel
 
         return $stmt;
     }
-    public function getAllProducts()
-    {
-        $query = "SELECT id, name, description, price, image FROM " . $this->table_name;
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
     public function getAllCategories()
     {
         $query = "SELECT id, name FROM category"; // Assuming 'name' is the column for category names
@@ -152,7 +145,13 @@ class ProductModel
     }
 
     //xóa 
-
+    public function getAllProducts()
+    {
+        $query = "SELECT id, name, description, price, image FROM " . $this->table_name;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     public function deleteProduct($id)
     {
         // Chuẩn bị câu lệnh SQL để xóa sản phẩm
@@ -170,7 +169,45 @@ class ProductModel
         }
     }
 
+    public function getTotalProducts() {
+        // Thực hiện truy vấn SQL để đếm số lượng sản phẩm
+        $query = "SELECT COUNT(*) as total FROM products";
+        $statement = $this->conn->prepare($query); // Sửa từ $this->db thành $this->conn
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
 
+    public function getProductsPaginated($start, $perPage) {
+        // Thực hiện truy vấn SQL để lấy danh sách sản phẩm với phân trang
+        $query = "SELECT * FROM products LIMIT :start, :perPage";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':start', $start, PDO::PARAM_INT);
+        $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 
-
+    public function searchProductsWithPagination($keyword, $start, $itemsPerPage) {
+        $query = "SELECT * FROM products WHERE name LIKE :keyword LIMIT :start, :itemsPerPage";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':keyword', '%' . $keyword . '%', PDO::PARAM_STR);
+        $stmt->bindValue(':start', $start, PDO::PARAM_INT);
+        $stmt->bindValue(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        // Lấy tổng số sản phẩm
+        $totalProducts = $stmt->rowCount();
+    
+        // Tính toán tổng số trang
+        $totalPages = ceil($totalProducts / $itemsPerPage);
+        
+        // Lấy danh sách sản phẩm trên trang hiện tại
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return ['products' => $products, 'totalPages' => $totalPages];
+    }
 }
+
+

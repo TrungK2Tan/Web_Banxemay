@@ -190,6 +190,25 @@ class ProductController {
             echo "Xóa sản phẩm không thành công.";
         }
     }
+    public function search() {
+        if (isset($_GET['keyword'])) {
+            $keyword = $_GET['keyword'];
+            $currentPage = isset($_GET['page']) ? $_GET['page'] : 2;
+            
+            // Số sản phẩm trên mỗi trang
+            $itemsPerPage = 6;
+            
+            // Tính toán vị trí bắt đầu của kết quả truy vấn
+            $start = ($currentPage - 1) * $itemsPerPage;
     
+            // Gọi phương thức từ ProductModel để tìm kiếm sản phẩm với phân trang
+            $searchResult = $this->productModel->searchProductsWithPagination($keyword, $start, $itemsPerPage);
+    
+            // Pass dữ liệu vào view và hiển thị
+            include_once 'app/views/products/search.php';
+        } else {
+            header('Location: /php');
+        }
+    }
     
 }
